@@ -3,10 +3,17 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet"/>
+        <link href="{{ asset('css/main.css') }}" rel="stylesheet"/>
     </head>
     <body>
+        <nav class="navbar navbar-dark bg-dark">
+            <span class="navbar-brand mb-0 h1">To-Do Planning</span>
+        </nav>
+
         {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+
+        <script src="{{ asset('js/jquery.min.js') }}"></script>
+        <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     </body>
 </html>
