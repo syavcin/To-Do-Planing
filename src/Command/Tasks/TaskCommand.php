@@ -7,17 +7,21 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Psr\Container\ContainerInterface;
+use App\Command\Tasks\Providers\ITProvider;
+use App\Command\Tasks\Providers\BusinessProvider;
+use App\Command\Tasks\Services\WorkPlanService;
 
 class TaskCommand extends Command
 {
 
     protected static $defaultName = 'Task:start';
-    protected static $providerList = [
-        ITProvider::class => "IT Task List",
-        BussinessProvider::class => "Bussiness Task List",
-    ];
-
+    protected $container;
     protected $io;
+
+    private $providerList = [
+        ITProvider::class,
+        BusinessProvider::class
+    ];
 
 
     public function __construct(ContainerInterface $container)
@@ -30,21 +34,36 @@ class TaskCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Get Task List');
+            ->setDescription('Generate Work Plan');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->io = new SymfonyStyle($input, $output);
-        $this->io->title("Generate Task List");
-        $selectProvider = $this->io->choice("Please Select Task Provider", self::$providerList);
+        $this->io->title("-- Generate Work Plan -- ");
+
 
         try {
-            $provider = new $selectProvider($this->container);
-            $provider->init();
-        } catch (\Throwable $th) {
-            $this->io->error($th);
+            foreach ($this->providerList as $class) {
+                $provider = new $class($this->container);
+                $provider->init();
+
+                $this->io->section("\r\nUpdating Task List : " . $provider->groupName);
+                $this->io->table(["Total Data", "Insert", "Update"], [[$provider->result['total'], $provider->result['insert'], $provider->result['update']]]);
+                $this->io->success("Complete " . $provider->groupName);
+            }
+
+
+            $this->io->section("Creating a Work Plan");
+            $service = new WorkPlanService($this->container);
+            $service->genereate();
+
+            $this->io->success("Complete Work Plan " );
+
+        } catch (\Exception $e) {
+            $this->io->error($e->getMessage());
         }
+
         return 0;
     }
 }

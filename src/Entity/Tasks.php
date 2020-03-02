@@ -19,6 +19,11 @@ class Tasks
     /**
      * @ORM\Column(type="string", length=255)
      */
+    private $groupName;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
     private $name;
 
     /**
@@ -34,6 +39,18 @@ class Tasks
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getGroupName(): ?string
+    {
+        return $this->groupName;
+    }
+
+    public function setGroupName(string $groupName): self
+    {
+        $this->groupName = $groupName;
+
+        return $this;
     }
 
     public function getName(): ?string

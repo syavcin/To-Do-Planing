@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command\Tasks;
+namespace App\Command\Tasks\Providers;
 
 use App\Entity\Tasks;
 use Psr\Container\ContainerInterface;

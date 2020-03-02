@@ -19,6 +19,14 @@ class TasksRepository extends ServiceEntityRepository
         parent::__construct($registry, Tasks::class);
     }
 
+    public function getTotalTime():int
+    {
+        return $this->createQueryBuilder('t')
+            ->select("SUM(t.time) AS total_time")
+            ->getQuery()
+            ->getOneOrNullResult()['total_time'];
+    }
+
     // /**
     //  * @return Tasks[] Returns an array of Tasks objects
     //  */

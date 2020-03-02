@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\TaskPlanning;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -12,8 +13,9 @@ class HomeController extends AbstractController
      */
     public function index()
     {
-        return $this->render('home/index.html.twig', [
-            'controller_name' => 'HomeController',
-        ]);
+        $data['plan'] = $this->getDoctrine()->getRepository(TaskPlanning::class)->groupByWeekData();
+        $data['works'] = $this->getDoctrine()->getRepository(TaskPlanning::class)->getTaskGroups();
+
+        return $this->render('home/index.html.twig', $data);
     }
 }
